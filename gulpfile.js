@@ -25,10 +25,10 @@ gulp.task('jshint', function() {
 // minify new images
 gulp.task('imagemin', function() {
 	var imgSrc = './src/images/**/*',
-		imgDist = './build/images';
+		imgDst = './build/images';
 
 	gulp.src(imgSrc)
-		.pipe(changed(imgDist))
+		.pipe(changed(imgDst))
 		.pipe(imagemin())
 		.pipe(gulp.dest(imgDst));
 });
