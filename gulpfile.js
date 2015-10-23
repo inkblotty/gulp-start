@@ -4,10 +4,12 @@
 var gulp = require('gulp');
 
 // include plug-ins
-var changed = require('gulp-changed'), // checks to see what needs updating -- only the changed files
+var autoprefix = require('gulp-autoprefixer'), // automatically adds vender prefixes
+	changed = require('gulp-changed'), // checks to see what needs updating -- only the changed files
 	concat = require('gulp-concat'),
 	imagemin = require('gulp-imagemin'),
 	jshint = require('gulp-jshint'),
+	minifyCSS = require('gulp-minify-css'),
 	minifyHTML = require('gulp-minify-html'),
 	stripDebug = require('gulp-strip-debug'), // removes console and debug statements
 	uglify = require('gulp-uglify');
@@ -48,4 +50,13 @@ gulp.task('scripts', function() {
 		.pipe(stripDebug())
 		.pipe(uglify())
 		.pipe(gulp.dest('./build/scripts/'));
+});
+
+// CSS concat, auto-prefix and minify
+gulp.task('styles', function() {
+	gulp.src(['./src/styles/*.css'])
+		.pipe(concat('styles.css'))
+		.pipe(autoprefix('last 2 versions'))
+		.pipe(minifyCSS())
+		.pipe(gulp.dest('./build/styles/'));
 });
