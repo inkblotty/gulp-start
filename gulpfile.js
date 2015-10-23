@@ -11,6 +11,7 @@ var autoprefix = require('gulp-autoprefixer'), // automatically adds vender pref
 	jshint = require('gulp-jshint'),
 	minifyCSS = require('gulp-minify-css'),
 	minifyHTML = require('gulp-minify-html'),
+	sass = require('gulp-sass'),
 	stripDebug = require('gulp-strip-debug'), // removes console and debug statements
 	uglify = require('gulp-uglify');
 
@@ -54,7 +55,8 @@ gulp.task('scripts', function() {
 
 // CSS concat, auto-prefix and minify
 gulp.task('styles', function() {
-	gulp.src(['./src/styles/*.css'])
+	gulp.src(['./src/styles/*.scss'])
+		.pipe(sass().on('error', sass.logError)) // double check this
 		.pipe(concat('styles.css'))
 		.pipe(autoprefix('last 2 versions'))
 		.pipe(minifyCSS())
