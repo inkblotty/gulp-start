@@ -4,7 +4,7 @@
 var gulp = require('gulp');
 
 // include plug-ins
-var changed = require('gulp-changed'),
+var changed = require('gulp-changed'), // checks to see what needs updating -- only the changed files
 	imagemin = require('gulp-imagemin'),
 	jshint = require('gulp-jshint'),
 	minifyHTML = require('gulp-minify-html');
