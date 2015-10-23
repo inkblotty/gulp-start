@@ -6,7 +6,8 @@ var gulp = require('gulp');
 // include plug-ins
 var changed = require('gulp-changed'),
 	imagemin = require('gulp-imagemin'),
-	jshint = require('gulp-jshint');
+	jshint = require('gulp-jshint'),
+	minifyHTML = require('gulp-minify-html');
 
 // JS hint task
 gulp.task('jshint', function() {
@@ -25,3 +26,15 @@ gulp.task('imagemin', function() {
 		.pipe(imagemin())
 		.pipe(gulp.dest(imgDst));
 });
+
+// minify html
+gulp.task('htmlpage', function() {
+	var htmlSrc = './src/*.html',
+		htmlDst = './build';
+
+	gulp.src(htmlSrc)
+		.pipe(changed(htmlDst))
+		.pipe(minifyHTML())
+		.pipe(gulp.dest(htmlDst));
+});
+
