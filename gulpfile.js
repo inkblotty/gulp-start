@@ -5,9 +5,12 @@ var gulp = require('gulp');
 
 // include plug-ins
 var changed = require('gulp-changed'), // checks to see what needs updating -- only the changed files
+	concat = require('gulp-concat'),
 	imagemin = require('gulp-imagemin'),
 	jshint = require('gulp-jshint'),
-	minifyHTML = require('gulp-minify-html');
+	minifyHTML = require('gulp-minify-html'),
+	stripDebug = require('gulp-strip-debug'), // removes console and debug statements
+	uglify = require('gulp-uglify');
 
 // JS hint task
 gulp.task('jshint', function() {
@@ -38,3 +41,11 @@ gulp.task('htmlpage', function() {
 		.pipe(gulp.dest(htmlDst));
 });
 
+// JS concat, strip debugging, and minify
+gulp.task('scripts', function() {
+	gulp.src(['./src/scripts/lib.js', '.src/scripts/*.js']) /* library scripts */
+		.pipe(concat('script.js'))
+		.pipe(stripDebug())
+		.pipe(uglify())
+		.pipe(gulp.dest('./build/scripts/'));
+});
