@@ -62,3 +62,21 @@ gulp.task('styles', function() {
 		.pipe(minifyCSS())
 		.pipe(gulp.dest('./build/styles/'));
 });
+
+// default task
+gulp.task('default', ['imagemin', 'htmlpage', 'scripts', 'styles'], function() {
+	// watch for HTML changes
+	gulp.watch('./src/*.html', function() {
+		gulp.run('htmlpage');
+	});
+
+	// watch for JS changes
+	gulp.watch('./src/scripts/*.js', function() {
+		gulp.run('jshint', 'scripts');
+	});
+
+	// watch for CSS changes
+	gulp.watch('./src/styles/*.scss', function() {
+		gulp.run('styles');
+	});
+});
