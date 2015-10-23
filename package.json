@@ -1,5 +1,6 @@
 {
   "devDependencies": {
-    "gulp": "^3.9.0"
+    "gulp": "^3.9.0",
+    "gulp-jshint": "^1.11.2"
   }
 }
