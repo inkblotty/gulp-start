@@ -9,6 +9,7 @@ var autoprefix = require('gulp-autoprefixer'), // automatically adds vender pref
 	concat = require('gulp-concat'),
 	imagemin = require('gulp-imagemin'),
 	jshint = require('gulp-jshint'),
+	livereload = require('gulp-livereload'),
 	minifyCSS = require('gulp-minify-css'),
 	minifyHTML = require('gulp-minify-html'),
 	sass = require('gulp-sass'),
@@ -44,18 +45,27 @@ gulp.task('htmlpage', function() {
 		.pipe(gulp.dest(htmlDst));
 });
 
-// JS concat, strip debugging, and minify
+// JS concat -- just for debugging
 gulp.task('scripts', function() {
 	gulp.src(['./src/scripts/lib.js', './src/scripts/*.js']) /* library scripts */
+		.pipe(changed('./src/scripts/*.js'))
 		.pipe(concat('script.js'))
-		.pipe(stripDebug())
-		.pipe(uglify())
 		.pipe(gulp.dest('./build/scripts/'));
+});
+
+// JS concat, strip debugging, and uglify -- for final build
+gulp.task('finalScripts', function(){
+	gulp.src(['./src/scripts/lib.js', './src/scripts/*.js'])
+	  .pipe(concat('script.js'))
+	  .pipe(strigDebug())
+	  .pipe(uglify())
+	  .pipe(gulp.dest('./build/scripts/'));
 });
 
 // CSS concat, auto-prefix and minify
 gulp.task('styles', function() {
 	gulp.src(['./src/styles/*.scss'])
+		.pipe(changed('./src/styles/*.scss'))
 		.pipe(sass().on('error', sass.logError)) // double check this
 		.pipe(concat('styles.css'))
 		.pipe(autoprefix('last 2 versions'))
@@ -63,20 +73,18 @@ gulp.task('styles', function() {
 		.pipe(gulp.dest('./build/styles/'));
 });
 
+// livereload
+gulp.task('watch', function(){
+  livereload.listen();
+  gulp.watch('./src/*.html', ['htmlpage']]);
+  gulp.watch('./src/styles/*.scss', ['styles']);
+  gulp.watch('./src/scripts/*.js', ['jshint', 'scripts']);
+})
+
+// build task
+gulp.task('finalBuild', ['htmlpage', 'styles', 'finalScripts'], function(){
+
+}
+
 // default task
-gulp.task('default', ['imagemin', 'htmlpage', 'scripts', 'styles'], function() {
-	// watch for HTML changes
-	gulp.watch('./src/*.html', function() {
-		gulp.run('htmlpage');
-	});
-
-	// watch for JS changes
-	gulp.watch('./src/scripts/*.js', function() {
-		gulp.run('jshint', 'scripts');
-	});
-
-	// watch for CSS changes
-	gulp.watch('./src/styles/*.scss', function() {
-		gulp.run('styles');
-	});
-});
+gulp.task('default', ['watch']);
