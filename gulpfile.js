@@ -47,8 +47,7 @@ gulp.task('htmlpage', function() {
 
 // JS concat -- just for debugging
 gulp.task('scripts', function() {
-	gulp.src(['./src/scripts/lib.js', './src/scripts/*.js']) /* library scripts */
-		.pipe(changed('./src/scripts/*.js'))
+	gulp.src(['./src/scripts/lib.js', './src/scripts/*.js'])
 		.pipe(concat('script.js'))
 		.pipe(gulp.dest('./build/scripts/'));
 });
@@ -65,8 +64,8 @@ gulp.task('finalScripts', function(){
 // CSS concat, auto-prefix and minify
 gulp.task('styles', function() {
 	gulp.src(['./src/styles/*.scss'])
+		.pipe(sass().on('error', sass.logError))
 		.pipe(changed('./src/styles/*.scss'))
-		.pipe(sass().on('error', sass.logError)) // double check this
 		.pipe(concat('styles.css'))
 		.pipe(autoprefix('last 2 versions'))
 		.pipe(minifyCSS())
@@ -76,15 +75,13 @@ gulp.task('styles', function() {
 // livereload
 gulp.task('watch', function(){
   livereload.listen();
-  gulp.watch('./src/*.html', ['htmlpage']]);
+  gulp.watch('./src/*.html', ['htmlpage']);
   gulp.watch('./src/styles/*.scss', ['styles']);
   gulp.watch('./src/scripts/*.js', ['jshint', 'scripts']);
-})
+});
 
 // build task
-gulp.task('finalBuild', ['htmlpage', 'styles', 'finalScripts'], function(){
-
-}
+gulp.task('finalBuild', ['htmlpage', 'styles', 'finalScripts']);
 
 // default task
 gulp.task('default', ['watch']);
