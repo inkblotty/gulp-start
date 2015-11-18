@@ -5,13 +5,14 @@ var gulp = require('gulp');
 
 // include plug-ins
 var autoprefix = require('gulp-autoprefixer'), // automatically adds vender prefixes
+  browserSync = require('browser-sync'),
 	changed = require('gulp-changed'), // checks to see what needs updating -- only the changed files
 	concat = require('gulp-concat'),
 	imagemin = require('gulp-imagemin'),
 	jshint = require('gulp-jshint'),
-	livereload = require('gulp-livereload'),
 	minifyCSS = require('gulp-minify-css'),
 	minifyHTML = require('gulp-minify-html'),
+	reload = browserSync.reload;
 	sass = require('gulp-sass'),
 	stripDebug = require('gulp-strip-debug'), // removes console and debug statements
 	uglify = require('gulp-uglify');
@@ -72,11 +73,11 @@ gulp.task('styles', function() {
 		.pipe(gulp.dest('./build/styles/'));
 });
 
-// livereload
+// browsersync
 gulp.task('browser-sync', function(){
   browserSync.init({
   server: {
-            baseDir: "./"
+            baseDir: "./build/"
         },
   notify: false
   });
