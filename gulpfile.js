@@ -73,15 +73,20 @@ gulp.task('styles', function() {
 });
 
 // livereload
-gulp.task('watch', function(){
-  livereload.listen();
-  gulp.watch('./src/*.html', ['htmlpage']);
-  gulp.watch('./src/styles/*.scss', ['styles']);
-  gulp.watch('./src/scripts/*.js', ['jshint', 'scripts']);
+gulp.task('browser-sync', function(){
+  browserSync.init({
+  server: {
+            baseDir: "./"
+        },
+  notify: false
+  });
+  gulp.watch('./src/*.html', ['htmlpage']).on('change', browserSync.reload);
+  gulp.watch('./src/styles/*.scss', ['styles']).on('change', browserSync.reload);
+  gulp.watch('./src/scripts/*.js', ['jshint', 'scripts']).on('change', browserSync.reload);
 });
 
 // build task
-gulp.task('finalBuild', ['htmlpage', 'styles', 'finalScripts']);
+gulp.task('finalBuild', ['htmlpage', 'styles', 'imagemin', 'finalScripts']);
 
 // default task
-gulp.task('default', ['watch']);
+gulp.task('default', ['browser-sync']);
