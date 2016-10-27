@@ -17,17 +17,37 @@ var autoprefix = require('gulp-autoprefixer'), // automatically adds vender pref
 	stripDebug = require('gulp-strip-debug'), // removes console and debug statements
 	uglify = require('gulp-uglify');
 
+
+var paths = {
+	scripts: {
+		source: [ '!node_modules', './src/scripts/lib.js', './src/scripts/**/*.js' ],
+		build: './build/scripts'
+	},
+	styles: {
+		source: [ './src/styles/**/*.scss' ],
+		build: './build/styles'
+	},
+	images: {
+		source: [ './src/images/**/*' ],
+		build: './build/images'
+	},
+	markup: {
+		source: [ './src/**/*.html' ],
+		build: './build'
+	}
+}
+
 // JS hint task
 gulp.task('jshint', function() {
-	gulp.src('./src/scripts/*.js')
+	gulp.src(paths.scripts.source)
 		.pipe(jshint())
 		.pipe(jshint.reporter('default'));
 });
 
 // minify new images
 gulp.task('imagemin', function() {
-	var imgSrc = './src/images/**/*',
-		imgDst = './build/images';
+	var imgSrc = paths.images.source,
+		imgDst = paths.images.build;
 
 	gulp.src(imgSrc)
 		.pipe(changed(imgDst))
@@ -37,8 +57,8 @@ gulp.task('imagemin', function() {
 
 // minify html
 gulp.task('htmlpage', function() {
-	var htmlSrc = './src/*.html',
-		htmlDst = './build';
+	var htmlSrc = paths.markup.source,
+		htmlDst = paths.markup.build;
 
 	gulp.src(htmlSrc)
 		.pipe(changed(htmlDst))
@@ -48,42 +68,42 @@ gulp.task('htmlpage', function() {
 
 // JS concat -- just for debugging
 gulp.task('scripts', function() {
-	gulp.src(['./src/scripts/lib.js', './src/scripts/*.js'])
+	gulp.src(paths.markup.source)
 		.pipe(concat('script.js'))
-		.pipe(gulp.dest('./build/scripts/'));
+		.pipe(gulp.dest(paths.markup.build));
 });
 
 // JS concat, strip debugging, and uglify -- for final build
 gulp.task('finalScripts', function(){
-	gulp.src(['./src/scripts/lib.js', './src/scripts/*.js'])
+	gulp.src(paths.markup.source)
 	  .pipe(concat('script.js'))
 	  .pipe(strigDebug())
 	  .pipe(uglify())
-	  .pipe(gulp.dest('./build/scripts/'));
+	  .pipe(gulp.dest(paths.markup.build));
 });
 
 // CSS concat, auto-prefix and minify
 gulp.task('styles', function() {
-	gulp.src(['./src/styles/*.scss'])
+	gulp.src(paths.styles.source)
 		.pipe(sass().on('error', sass.logError))
-		.pipe(changed('./src/styles/*.scss'))
+		.pipe(changed(paths.styles.source))
 		.pipe(concat('styles.css'))
 		.pipe(autoprefix('last 2 versions'))
 		.pipe(minifyCSS())
-		.pipe(gulp.dest('./build/styles/'));
+		.pipe(gulp.dest(paths.styles.build));
 });
 
 // browsersync
 gulp.task('browser-sync', function(){
   browserSync.init({
   server: {
-            baseDir: "./build/"
+            baseDir: paths.markup.build
         },
   notify: false
   });
-  gulp.watch('./src/*.html', ['htmlpage']).on('change', browserSync.reload);
-  gulp.watch('./src/styles/*.scss', ['styles']).on('change', browserSync.reload);
-  gulp.watch('./src/scripts/*.js', ['jshint', 'scripts']).on('change', browserSync.reload);
+  gulp.watch(paths.markup.source, ['htmlpage']).on('change', browserSync.reload);
+  gulp.watch(paths.styles.source, ['styles']).on('change', browserSync.reload);
+  gulp.watch(paths.scripts.source, ['jshint', 'scripts']).on('change', browserSync.reload);
 });
 
 // build task
